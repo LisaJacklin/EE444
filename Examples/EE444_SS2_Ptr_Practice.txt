@@ -12,6 +12,7 @@ sfrw _REG1 = _REG1; //assembly code that does the same as the #define above
 
 void main(void) {
 	
+//note that in C programming, all integers must be initialized at the very beginning of the main/function
 	unsigned int i = 25;
 	unsigned int* volatile MyPtr = (unsigned int*) 0x4000;
 
@@ -19,4 +20,13 @@ void main(void) {
 	*MyPtr = i; 
 	MyPtr = &i; //this gives the address location of where I is
 
+//also note that in a loop, the value used must already be predefined and existing. 
+//thus, the value exists throughout the code, not just in the loop...
+
+/*
+Example: 
+	for (i=0 ; i<3; i++) //notice how i is not defined...it must be predefined before use at the 
+				//beginning of the function/code.
+		A[i];
+*/
 }
