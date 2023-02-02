@@ -1,0 +1,22 @@
+//Lisa Jacklin
+//EE 444 Embedded systems
+//Slide set 2 program covering
+
+//look at this code like a pointer review...
+
+#include <msp430.h> // this is the header file that contains info fo the microcontroller we will
+//be using.
+
+#define _REG1 (0x4000)
+sfrw _REG1 = _REG1; //assembly code that does the same as the #define above
+
+void main(void) {
+	
+	unsigned int i = 25;
+	unsigned int* volatile MyPtr = (unsigned int*) 0x4000;
+
+	i = (unsigned int) MyPtr;
+	*MyPtr = i; 
+	MyPtr = &i; //this gives the address location of where I is
+
+}
