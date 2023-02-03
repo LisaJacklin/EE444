@@ -1,0 +1,35 @@
+
+SYMBOLS BY NAME
+
+    5c00 ISR        _InterruptService_LED
+    1c00            ___RAM_Address      
+    4000            ___RAM_Size         
+       0            ___begin_IDATA0     
+       0            ___begin_THREAD     
+       0            ___begin_UDATA0     
+       0            ___end_IDATA0       
+       0            ___end_THREAD       
+       0            ___end_UDATA0       
+    5c22 CODE       _main               
+    5c74 CODE       _memcpy             
+    5c84 CODE       _memset             
+    5c22 CONST      thread_init_begin   
+    5c22 CONST      thread_init_end     
+
+
+SYMBOLS BY VALUE
+
+       0            ___begin_IDATA0     
+       0            ___begin_THREAD     
+       0            ___begin_UDATA0     
+       0            ___end_IDATA0       
+       0            ___end_THREAD       
+       0            ___end_UDATA0       
+    1c00            ___RAM_Address      
+    4000            ___RAM_Size         
+    5c00 ISR        _InterruptService_LED
+    5c22 CODE       _main               
+    5c22 CONST      thread_init_begin   
+    5c22 CONST      thread_init_end     
+    5c74 CODE       _memcpy             
+    5c84 CODE       _memset             
