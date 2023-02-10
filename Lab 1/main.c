@@ -88,8 +88,10 @@ main(void)
 void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
     //push button is P2.7 
     //SET UP A WAY TO DO THE FIRST OR SECOND PUSH OF THE BUTTON...
+    x = 0;
 
     if (P2IV == P2IV_P2IFG7){
+      x++;
      P1OUT ^= BIT0;                   //this should toggle the LED in use
 
      TA0CCR1 ^= BIT1;                     //THIS SHOULD CAPTURE...
