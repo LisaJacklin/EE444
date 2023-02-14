@@ -19,7 +19,7 @@ note: it is acceptable to set the breakpoint in order to check the time measurem
 extern int IncrementVcore(void);
 extern int DecrementVcore(void);
 
-int x;
+int ButtonPressed;
 
 void
 main(void)
@@ -28,15 +28,18 @@ main(void)
   P7SEL |= BIT0 + BIT1;                 //THIS SHOULD TELL THAT HEY! THE SPECCIL CRYSTAL IS HERE PLS USE ME
   
   //THIS WHILE LOOP WILL CHECK TO MAKE SURE THE CRYSTAL IS ONLINE
+  //THIS IS GRABBED FROM THE SLIDE SET 3
   while (UCSCTL7 & XT1LFOFFG) {
     UCSCTL7 &=~XT1LFOFFG;
     }
 
   //these should drop the voltage to the lowest voltage of the core before changing the clock
+//Objective 2: setting the core voltage to be the max level
 
-  IncrementVcore();                     //this should be used as many times as needed to make sure the voltage 
-  IncrementVcore();                     //is in the correct top range of 2.4 to 3.6 V
-  IncrementVcore();                     // this should raise the max core voltage three times
+    //ADD A BREAKPOINT BEFORE THESE INCREMENTS IN ORDER TO STEP THROUGH AND TEST THE VOLTAGE
+    IncrementVcore();                   //this should be used as many times as needed to make sure the voltage 
+    IncrementVcore();                   //is in the correct top range of 2.4 to 3.6 V
+    IncrementVcore();                   // this should raise the max core voltage three times
 
 //Objective 1: setting up MCLK to read close to 25MHz
    UCSCTL1 = DCORSEL_6;                 //THIS SETS THE FREQUENCY RANGE
@@ -48,29 +51,30 @@ main(void)
    P11SEL |= BIT0;                      // this should set the functionality to periperial
    P11OUT |= BIT1 ;                     // this should give an output to 11.1
 
-//Objective 2: setting the core voltage to be the max level
-
-  //ADD A BREAKPOINT BEFORE THESE INCREMENTS IN ORDER TO STEP THROUGH AND TEST THE VOLTAGE
 
 //Objective 3(Main): measure time between button presses
 
   //TIMER SETUP FOR MAIN OBJECTIVE
-   P7SEL |= 0X03;                        //XT1 CLOCK PINS
-   UCSCTL6 &= ~(XT1OFF);                 //CHECKING TO SEE IF THE CLOCK IS OFF
-   UCSCTL6 |= XCAP_3;                    //LOAD CAPACITOR SPECIFYER
+   P7SEL |= 0X03;                       //XT1 CLOCK PINS
+   UCSCTL6 &= ~(XT1OFF);                //CHECKING TO SEE IF THE CLOCK IS OFF
+   UCSCTL6 |= XCAP_3;                   //LOAD CAPACITOR SPECIFYER
 
 
    //THIS IS TO MAKE SURE NO FAULT FLAGS HAVE OCCURRED.
-   do {
-       UCSCTL7 &= ~(XT1LOFFG + DCOFFG); //CLEARS CLOCK INTERRUPT FLAGS
-       SFRIFG1 &= ~OFIFG;               //THIS SHOULD CLEAR THE FLAG 
-   } while ((SFRIFG1 & OFIFG));         //only performs if this is occuring
+   //THIS IS TAKEN FROM THE SLIDE SET 3 JUST LIKE THE LAST LOOP WHILE LOOP AT LINE 32
+  while (SFRIFG1 & OFIFG )              //TESTING OSCILLATOR FULT FLAG
+  {
+    UCSCTL7 &=~ (XT2OFFG +XT1LFOFFG + XT1HFOFFG+DCOFFG );
+                                        //CLEARS XT2, XT1, DCO FAULT FLAGS
+    SFRIG1 &= ~OFIFG;                   //CLEAR FAULT FLAGS
+  }
+
 
    P11DIR |= BIT0;                      // sets the bit for the base clock frequency
    P11SEL |= BIT0;                      //selects the correct clock for the ACLK
 
    //sets timmer A to depend on the ACLK and to be continuous 
-   TA0CTL = TASSEL_ACLK + MC_CONTINUOUS;
+   TA0CTL = TASSEL__ACLK + MC__CONTINUOUS;
 
    P5DIR |= BIT0;
    P5OUT &= ~BIT0;
@@ -91,23 +95,23 @@ main(void)
 void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
     //when there is an interrupt, the button constant must be changed
     //button constant is x.
-    if (P21V == P2IV_P2IFG6) {
-        x ^= BIT0;                     //toggles x when the button is pressed
+    if (P2IV == P2IV_P2IFG6) {
+        ButtonPressed ^= BIT0;                      //toggles x when the button is pressed
     }
      
     //when the button constant is toggled to one
-    if (x == 1) {
-        TA0CTL |= TACLR;               //resets the timer; clear the timer on initial press
-        P5OUT ^= BIT0;                 //displays an output when pressed
+    if (ButtonPressed == 1) {
+
+        TA0CTL |= TACLR;                //resets the timer; clear the timer on initial press
+        P5OUT ^= BIT0;                  //displays an output when pressed
     }
 
     //if the button const is toggled to zero
-    if (x == 0) {
+    if (ButtonPressed == 0) {
         P5OUT ^= BIT0;                  //displays an output when button at zero
-        x = 0;                          //verify and set the loop again.
+        ButtonPressed = 0;                          //verify and set the loop again.
     }
 
+    //the last thing you should/could do is add a clear to the end that way all interrupts are cleared for the next service
 }
-    
 
-}  
