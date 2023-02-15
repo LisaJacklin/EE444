@@ -66,7 +66,7 @@ main(void)
   {
     UCSCTL7 &=~ (XT2OFFG +XT1LFOFFG + XT1HFOFFG+DCOFFG );
                                         //CLEARS XT2, XT1, DCO FAULT FLAGS
-    SFRIG1 &= ~OFIFG;                   //CLEAR FAULT FLAGS
+    SFRIFG1 &= ~OFIFG;                   //CLEAR FAULT FLAGS
   }
 
 
@@ -101,7 +101,6 @@ void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
      
     //when the button constant is toggled to one
     if (ButtonPressed == 1) {
-
         TA0CTL |= TACLR;                //resets the timer; clear the timer on initial press
         P5OUT ^= BIT0;                  //displays an output when pressed
     }

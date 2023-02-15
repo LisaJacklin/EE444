@@ -17,13 +17,13 @@ main(void) {
 //Objective 1: Set MCLK to 4MHz
     
   //Setting up the clock
-   UCSCTL1 = DCORSEL_3;               //this sets the range for the frequency
-   UCSCTL2 = 121;                     //this is the N factoring for the main signal
+   UCSCTL1 = DCORSEL_6;               //this sets the range for the frequency
+   UCSCTL2 = 762;                     //this is the N factoring for the main signal
    //these two are what give the correct range and figure of frequency
 
-   UCSCTL3 = SELREF_0;                // this will set the reference clock to XT1CLK
+   UCSCTL3 = SELREF_2;                // this will set the reference clock to XT1CLK
    //note that the SELREF_0 was grabbed from the header file for the microprocessor
-   UCSCTL4 = SELM_3;                  //this should allow for DCOCLKDIV to be used.
+   UCSCTL4 = SELM_2;                  //this should allow for DCOCLKDIV to be used.
                                       //DCOCLKDIV is required for MCLK
 
    P11SEL |= BIT1;                    // this should set the functionality to periperial
