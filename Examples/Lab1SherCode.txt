@@ -1,0 +1,55 @@
+#include <msp430.h>
+extern int IncrementVcore(void);
+extern int DecrementVcore(void);
+int readvalue = 0;
+ void main(void){
+IncrementVcore(); //calling the function raises the core voltage
+IncrementVcore();
+IncrementVcore(); //calling the function thrice raises to max core voltage
+
+UCSCTL1=DCORSEL_6; //range of frequencies
+ UCSCTL2=762; // sets N=121 and D=1
+ UCSCTL3=0x0000; // setting n=1
+ UCSCTL4=SELM_3; //source from crystal
+ P11DIR|=BIT1; // setting output
+ P11SEL|=BIT1; 
+
+ P7SEL |= 0x03; //sets the XT1 pins
+UCSCTL6 &= ~(XT1OFF); //making sure XT1 is not off
+UCSCTL6 |= XCAP_3; //internal load capacitor 
+do {
+UCSCTL7 &= ~(XT1LFOFFG + DCOFFG); //clear the XT1 and DCO flags
+SFRIFG1 &= ~OFIFG; //clear the OSC fault flag
+} while ((SFRIFG1 & OFIFG));
+//by default the ACLK is already at 32768 Hz
+ P11DIR|=BIT0;
+ P11SEL|=BIT0; //so that I can verify the ACLK frequency
+
+TA0CTL = TASSEL__ACLK + MC__CONTINUOUS; //lets timer A be set to continuous mode and ACLK as the clock source
+
+P5DIR|=BIT0;
+P5OUT &= ~BIT0;
+//P5SEL|=BIT0;
+
+P2DIR &= ~(BIT6); // sets button to input by default
+P2REN = BIT6; //pullup resistor
+P2OUT = BIT6; //pullup resistor
+P2IE |= BIT6; //enable
+_EINT(); //setup ports in main
+LPM0;
+}
+
+void isr(void) __interrupt [PORT2_VECTOR] {
+if(P2IV==P2IV_P2IFG6) {
+readvalue ^= BIT0; //each time button is pressed, toggle readvalue
+}
+if (readvalue==1) { 
+TA0CTL|=TACLR; //clears when initial pressing
+P5OUT ^= BIT0;
+}
+if (readvalue==0) { //if the button is 0, toggle
+P5OUT ^= BIT0;
+readvalue = 0; 
+}
+//P2IV=0; clears the flag to "debounce"
+}
