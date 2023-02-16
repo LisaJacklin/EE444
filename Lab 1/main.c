@@ -24,18 +24,6 @@ int ButtonPressed;
 void
 main(void)
 {
-  P7DIR = BIT0;                         //THIS SHOULD SET THE PIN TO CRYSTAL MODE
-  P7SEL |= BIT0 + BIT1;                 //THIS SHOULD TELL THAT HEY! THE SPECCIL CRYSTAL IS HERE PLS USE ME
-  
-  //THIS WHILE LOOP WILL CHECK TO MAKE SURE THE CRYSTAL IS ONLINE
-  //THIS IS GRABBED FROM THE SLIDE SET 3
-  while (UCSCTL7 & XT1LFOFFG) {
-    UCSCTL7 &=~XT1LFOFFG;
-    }
-
-  //these should drop the voltage to the lowest voltage of the core before changing the clock
-//Objective 2: setting the core voltage to be the max level
-
     //ADD A BREAKPOINT BEFORE THESE INCREMENTS IN ORDER TO STEP THROUGH AND TEST THE VOLTAGE
     IncrementVcore();                   //this should be used as many times as needed to make sure the voltage 
     IncrementVcore();                   //is in the correct top range of 2.4 to 3.6 V
@@ -45,13 +33,13 @@ main(void)
    UCSCTL1 = DCORSEL_6;                 //THIS SETS THE FREQUENCY RANGE
    UCSCTL2 = 762;                       //THIS SETS THE DIVISOR FOR FREQUENCY
 
-   UCSCTL3 |= SELREF_2;                 //USING REFOCLK AS THE REFERENCED CLOCK
-   UCSCTL4 |= SELM_2 ;                  //SELM 2 SETS THE ACLK SOURCE TO REFOCLK 
+   UCSCTL3 |= SELREF_3;                 //USING REFOCLK AS THE REFERENCED CLOCK
+   UCSCTL4 |= SELM_3 ;                  //SELM 2 SETS THE ACLK SOURCE TO REFOCLK 
 
-   P11SEL |= BIT0;                      // this should set the functionality to periperial
+   P11SEL |= BIT1;                      // this should set the functionality to periperial
    P11OUT |= BIT1 ;                     // this should give an output to 11.1
 
-
+	
 //Objective 3(Main): measure time between button presses
 
   //TIMER SETUP FOR MAIN OBJECTIVE
@@ -73,7 +61,7 @@ main(void)
    P11DIR |= BIT0;                      // sets the bit for the base clock frequency
    P11SEL |= BIT0;                      //selects the correct clock for the ACLK
 
-   //sets timmer A to depend on the ACLK and to be continuous 
+   //sets timer A to depend on the ACLK and to be continuous 
    TA0CTL = TASSEL__ACLK + MC__CONTINUOUS;
 
    P5DIR |= BIT0;

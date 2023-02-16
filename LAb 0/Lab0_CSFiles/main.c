@@ -18,7 +18,7 @@ main(void) {
     
   //Setting up the clock
    UCSCTL1 = DCORSEL_6;               //this sets the range for the frequency
-   UCSCTL2 = 762;                     //this is the N factoring for the main signal
+   UCSCTL2 = 121;                     //this is the N factoring for the main signal
    //these two are what give the correct range and figure of frequency
 
    UCSCTL3 = SELREF_2;                // this will set the reference clock to XT1CLK
