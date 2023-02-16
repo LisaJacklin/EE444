@@ -3,26 +3,28 @@
  EE 444 Lab 2
  2/15/2023
 
+ Objective: set MCLK and SMCLK to be 25MHz and setup Timer A to generate two PWM signals on two available pins
+  on the board. These PwM signals are both set to have a period of 10 us and a duty cycle of 25% and 75% repectively.
+
 */
 
 #include <msp430.h>
 
-
 void main(void){
 
 //CHECKS THAT XT1 IS NOT TURNED OFF BY DEFAULT
-P7SEL |= (BIT0 + BIT1);
-while (UCSCTL7 & XT1LFOFFG) {
-  UCSCTL7 &= ~XT1LFOFFG;
-}
+ P7SEL |= (BIT0 + BIT1);
+
+ while (UCSCTL7 & XT1LFOFFG) {
+   UCSCTL7 &= ~XT1LFOFFG;
+ }
 
 //First, seting up the MCLK to be as close to 25 MHz like in lab 1
    UCSCTL1 = DCORSEL_6;               //this sets the range for the frequency
    UCSCTL2 = 762;                     //this is the N factoring for the main signal
    UCSCTL3 = SELREF_2;                // this will set the reference clock to XT1CLK
    UCSCTL4 = SELM__DCOCLK;            // SETS THE DCOCLK AS THE CLOCK SOURCE FOR MCLK
-                                      //DCOCLKDIV is required for MCLK
-
+                                      //THAT WAY THERE IS NO DIVISION ON THE CLOCK FREQUENCY 
    //This is the output destination of the signal from the MCLK
    P11SEL |= BIT1;                    // this should set the functionality to periperial
    P11OUT |= BIT1 ;                   // this should give an output to 11.1
@@ -33,32 +35,31 @@ while (UCSCTL7 & XT1LFOFFG) {
   UCSCTL8 |= SMCLKREQEN;              //this should disable conditional requests for the SMCLK
 
  //TIMER SETUP FOR MAIN OBJECTIVE
-    //note that since we want a 10us period, the frequency should be 6553 MHz...? based on 65535 max
+    //note that since we want a 10us period,and 25MHz frequency, so the cycles needed would be 250.
     //ALSO NOTE THAT THERE SHOULD BE ONE SET FOR 25% DUTY N ANOTHER FOR 75% DUTY
 
    //sets timer A1 to depend on the SMCLK and to be continuous 
-   TA1CTL = TASSEL__SMCLK + MC__CONTINUOUS;
+   TA1CTL = TASSEL__SMCLK + MC__UP;   //THE UP SO WE CAN SET THE TOP VALUE COUNT IN CCR0
    TA1CCTL0 = OUTMOD2;                //THIS SHOULD SET TO TOGGLE/RESET MODE
    
    //SETTING UP THE 25% DUTY CYCLE
-   TA1CCR1 = 16353; //VALUE THAT IS COUNTED TO THAT IS 25% OF THE MAX CYCLE VALUE
+   TA1CCR0 = 250;                     //THIS IS THE TOP CYCLE VALUE SINCE IT WOULD RESULT IN 10US RESULT
+   TA1CCR1 = 62;                      //VALUE THAT IS COUNTED TO THAT IS 25% OF THE MAX CYCLE VALUE
 
    P8SEL |= BIT5;                     //PIN 8.5 SELECTED AS TIMERA1 OUTPUT                   
    P8DIR |= BIT5;                     
    P8OUT &= ~BIT5;
 
   //SETUP TIMER A0 TO DEPEND ON THE SMCLK AND TO BE CONTINUOUS FOR 75% CYCLE
-  TA0CTL = TASSEL__SMCLK + MC__CONTINOUS;
-  TA0CCTL0 = OUTMOD2;                 //SET TO TOGGLE/RESET MODE
+  TA1CCTL1 = OUTMOD2;                 //SET TO TOGGLE/RESET MODE
 
-  TA0CCR0 = 49151; //VALUE THAT IS COUNTED TO THAT IS 75% OF THE MAX CYCLE VALUE
+  //this needs to be checked to verify that it is setup for the correct section of the timer...
+  TA1CCR1 = 187; //VALUE THAT IS COUNTED TO THAT IS 75% OF THE MAX CYCLE VALUE
 
   //THIS SHOULD SETUP THE OUTPUT FOR THE SECOND CYCLE...
-  P8SEL |= BIT0;
-  P8DIR |= BIT0;
-  P8OUT &=~BIT0;
-
-
+   P8SEL |= BIT6;                     //PIN 8.5 SELECTED AS TIMERA1 OUTPUT                   
+   P8DIR |= BIT6;                     
+   P8OUT &= ~BIT6;
 
 //CHECKS TO MAKE SURE THERE ARE NO FAULT FLAGS AND IF SO TO CLEAR THEM
 while (SFRIFG1&OFIFG)
