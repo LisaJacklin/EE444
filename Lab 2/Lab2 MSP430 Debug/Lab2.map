@@ -1,6 +1,7 @@
 
 SYMBOLS BY NAME
 
+    5cc0 CODE       _IncrementVcore     
     1c00            ___RAM_Address      
     4000            ___RAM_Size         
        0            ___begin_IDATA0     
@@ -10,8 +11,8 @@ SYMBOLS BY NAME
        0            ___end_THREAD       
        0            ___end_UDATA0       
     5c14 CODE       _main               
-    5cb2 CODE       _memcpy             
-    5cc2 CODE       _memset             
+    5d62 CODE       _memcpy             
+    5d72 CODE       _memset             
     5c14 CONST      thread_init_begin   
     5c14 CONST      thread_init_end     
 
@@ -29,5 +30,6 @@ SYMBOLS BY VALUE
     5c14 CODE       _main               
     5c14 CONST      thread_init_begin   
     5c14 CONST      thread_init_end     
-    5cb2 CODE       _memcpy             
-    5cc2 CODE       _memset             
+    5cc0 CODE       _IncrementVcore     
+    5d62 CODE       _memcpy             
+    5d72 CODE       _memset             

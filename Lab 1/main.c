@@ -29,6 +29,7 @@ main(void)
     IncrementVcore();                   //is in the correct top range of 2.4 to 3.6 V
     IncrementVcore();                   // this should raise the max core voltage three times
 
+
 //Objective 1: setting up MCLK to read close to 25MHz
    UCSCTL1 = DCORSEL_6;                 //THIS SETS THE FREQUENCY RANGE
    UCSCTL2 = 762;                       //THIS SETS THE DIVISOR FOR FREQUENCY
@@ -36,27 +37,16 @@ main(void)
    UCSCTL3 |= SELREF_3;                 //USING REFOCLK AS THE REFERENCED CLOCK
    UCSCTL4 |= SELM_3 ;                  //SELM 2 SETS THE ACLK SOURCE TO REFOCLK 
 
+   P11DIR |= BIT1;
    P11SEL |= BIT1;                      // this should set the functionality to periperial
    P11OUT |= BIT1 ;                     // this should give an output to 11.1
 
-	
 //Objective 3(Main): measure time between button presses
 
   //TIMER SETUP FOR MAIN OBJECTIVE
    P7SEL |= 0X03;                       //XT1 CLOCK PINS
    UCSCTL6 &= ~(XT1OFF);                //CHECKING TO SEE IF THE CLOCK IS OFF
    UCSCTL6 |= XCAP_3;                   //LOAD CAPACITOR SPECIFYER
-
-
-   //THIS IS TO MAKE SURE NO FAULT FLAGS HAVE OCCURRED.
-   //THIS IS TAKEN FROM THE SLIDE SET 3 JUST LIKE THE LAST LOOP WHILE LOOP AT LINE 32
-  while (SFRIFG1 & OFIFG )              //TESTING OSCILLATOR FULT FLAG
-  {
-    UCSCTL7 &=~ (XT2OFFG +XT1LFOFFG + XT1HFOFFG+DCOFFG );
-                                        //CLEARS XT2, XT1, DCO FAULT FLAGS
-    SFRIFG1 &= ~OFIFG;                   //CLEAR FAULT FLAGS
-  }
-
 
    P11DIR |= BIT0;                      // sets the bit for the base clock frequency
    P11SEL |= BIT0;                      //selects the correct clock for the ACLK
@@ -69,10 +59,10 @@ main(void)
 
   //PUSH BUTTON TO TIME REACTION SETUP
     //push button is P2.7 so BIT7 is what we are messing with
-    P2DIR &= ~BIT6;                    //sets to input direction
-    P2IE |= BIT6;                      // interrupts are allowed for this button                  
-    P2REN = BIT6;                      //input with pull up resistor 
-    P2OUT = BIT6;                      //also required to enable pull up resistor.
+    P2DIR &= ~BIT7;                    //sets to input direction
+    P2IE |= BIT7;                      // interrupts are allowed for this button                  
+    P2REN = BIT7;                      //input with pull up resistor 
+    P2OUT = BIT7;                      //also required to enable pull up resistor.
 
 
 //THIS MUST STAY HERE AT THE END OF THE PROGRAM
