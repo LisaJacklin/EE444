@@ -89,6 +89,12 @@ void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
         ButtonPressed = 0;                          //verify and set the loop again.
     }
 
+    //idea 1: add a __delay_cycles(); to the first button press for it to show on the 
+    //oscilliscope
+
+    //idea 2: potentially add a break; into the code...?
+
+
     //the last thing you should/could do is add a clear to the end that way all interrupts are cleared for the next service
 }
 
