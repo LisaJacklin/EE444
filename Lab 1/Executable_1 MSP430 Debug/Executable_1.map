@@ -1,39 +1,39 @@
 
 SYMBOLS BY NAME
 
-    1c00 UDATA0     _ButtonPressed      
-    5cc2 CODE       _IncrementVcore     
+    1c00 IDATA0     _ButtonPressed      
+    5cc6 CODE       _IncrementVcore     
     5c00 ISR        _InterruptService_BUTTON
     1c00            ___RAM_Address      
     4000            ___RAM_Size         
-       0            ___begin_IDATA0     
+    1c00            ___begin_IDATA0     
        0            ___begin_THREAD     
-    1c00            ___begin_UDATA0     
-       0            ___end_IDATA0       
+       0            ___begin_UDATA0     
+    1c02            ___end_IDATA0       
        0            ___end_THREAD       
-    1c02            ___end_UDATA0       
-    5c4c CODE       _main               
-    5d64 CODE       _memcpy             
-    5d74 CODE       _memset             
-    5c4c CONST      thread_init_begin   
-    5c4c CONST      thread_init_end     
+       0            ___end_UDATA0       
+    5c50 CODE       _main               
+    5d68 CODE       _memcpy             
+    5d78 CODE       _memset             
+    5c50 CONST      thread_init_begin   
+    5c50 CONST      thread_init_end     
 
 
 SYMBOLS BY VALUE
 
-       0            ___begin_IDATA0     
        0            ___begin_THREAD     
-       0            ___end_IDATA0       
+       0            ___begin_UDATA0     
        0            ___end_THREAD       
-    1c00            ___begin_UDATA0     
+       0            ___end_UDATA0       
     1c00            ___RAM_Address      
-    1c00 UDATA0     _ButtonPressed      
-    1c02            ___end_UDATA0       
+    1c00            ___begin_IDATA0     
+    1c00 IDATA0     _ButtonPressed      
+    1c02            ___end_IDATA0       
     4000            ___RAM_Size         
     5c00 ISR        _InterruptService_BUTTON
-    5c4c CODE       _main               
-    5c4c CONST      thread_init_begin   
-    5c4c CONST      thread_init_end     
-    5cc2 CODE       _IncrementVcore     
-    5d64 CODE       _memcpy             
-    5d74 CODE       _memset             
+    5c50 CODE       _main               
+    5c50 CONST      thread_init_begin   
+    5c50 CONST      thread_init_end     
+    5cc6 CODE       _IncrementVcore     
+    5d68 CODE       _memcpy             
+    5d78 CODE       _memset             
