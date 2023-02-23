@@ -11,6 +11,7 @@ UCSCTL1=DCORSEL_6; //range of frequencies
  UCSCTL2=762; // sets N=121 and D=1
  UCSCTL3=0x0000; // setting n=1
  UCSCTL4=SELM_3; //source from crystal
+
  P11DIR|=BIT1; // setting output
  P11SEL|=BIT1; 
 
@@ -35,6 +36,7 @@ P2DIR &= ~(BIT6); // sets button to input by default
 P2REN = BIT6; //pullup resistor
 P2OUT = BIT6; //pullup resistor
 P2IE |= BIT6; //enable
+
 _EINT(); //setup ports in main
 LPM0;
 }
