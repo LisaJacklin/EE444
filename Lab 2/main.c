@@ -46,6 +46,7 @@ IncrementVcore();
  //TIMER SETUP FOR MAIN OBJECTIVE
    //sets timer A1 to depend on the SMCLK and to be continuous 
    TA1CTL = TASSEL__SMCLK + MC__UP;   //THE UP SO WE CAN SET THE TOP VALUE COUNT IN CCR0
+   //ta1ctl should apply for all timer A's
    TA1CCTL0 = OUTMOD2;                //THIS SHOULD SET TO TOGGLE/RESET MODE
    
    //SETTING UP THE 25% DUTY CYCLE
@@ -54,20 +55,20 @@ IncrementVcore();
 
    P8SEL |= BIT5;                     //PIN 8.5 SELECTED AS TIMERA1 OUTPUT                   
    P8DIR |= BIT5;                     
-   P8OUT &=~ BIT5;
-
+   
   //SETUP TIMER A0 TO DEPEND ON THE SMCLK AND TO BE CONTINUOUS FOR 75% CYCLE
-  TA1CCTL1 = OUTMOD2;                 //SET TO TOGGLE/RESET MODE
+  //setting up Ta1.2 timer for the second one
+  TA1CCTL2 = OUTMOD2;                 //THIS SHOULD SET TO TOGGLE/RESET MODE
 
   //this needs to be checked to verify that it is setup for the correct section of the timer...
-  TA1CCR1 = 186; //VALUE THAT IS COUNTED TO THAT IS 75% OF THE MAX CYCLE VALUE
+  TA1CCR2 = 186; //VALUE THAT IS COUNTED TO THAT IS 75% OF THE MAX CYCLE VALUE
 
   //THIS SHOULD SETUP THE OUTPUT FOR THE SECOND CYCLE...
-   P8SEL |= BIT6;                     //PIN 8.5 SELECTED AS TIMERA1 OUTPUT                   
-   P8DIR |= BIT6;                     
-   P8OUT &=~ BIT6;
+ 
+   P7SEL |= BIT3;                     //PIN 8.5 SELECTED AS TIMERA1 OUTPUT                   
+   P7DIR |= BIT3;                     
 
-_EINT();
+//_EINT();
 LPM0;                                 //THIS IS WHAT WILL BE CHANGING DURING THIS LAB
 
 }
