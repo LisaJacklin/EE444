@@ -82,8 +82,11 @@ void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
     if (ButtonPressed == 0) {
         TA0CTL |= TACLR;                             //resets the timer; clear the timer on initial press
         P5OUT ^= BIT0;  
+        // __delay_cycles(200000);
         ButtonPressed = 1;                             //displays an output when pressed
+                 
     }
+
 
     //if the button const is toggled to zero
     if (ButtonPressed == 1) {
@@ -91,8 +94,6 @@ void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
         ButtonPressed = 0;                          //verify and set the loop again.
         1+1;
     }
-<<<<<<< HEAD
-=======
 
     //idea 1: add a __delay_cycles(); to the first button press for it to show on the 
     //oscilliscope
@@ -100,7 +101,6 @@ void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
     //idea 2: potentially add a break; into the code...?
 
 
->>>>>>> 723dac15bd05b82fc55c43b2169508c91e264bad
     //the last thing you should/could do is add a clear to the end that way all interrupts are cleared for the next service
 }
 }

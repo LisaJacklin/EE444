@@ -1,9 +1,7 @@
 
 SYMBOLS BY NAME
 
-    1c00 IDATA0     _ButtonPressed      
-    5cc6 CODE       _IncrementVcore     
-    5c00 ISR        _InterruptService_BUTTON
+    5cd0 CODE       _IncrementVcore     
     1c00            ___RAM_Address      
     4000            ___RAM_Size         
     1c00            ___begin_IDATA0     
@@ -12,9 +10,11 @@ SYMBOLS BY NAME
     1c02            ___end_IDATA0       
        0            ___end_THREAD       
        0            ___end_UDATA0       
+    5c00 ISR        _isr                
     5c50 CODE       _main               
-    5d68 CODE       _memcpy             
-    5d78 CODE       _memset             
+    5d72 CODE       _memcpy             
+    5d82 CODE       _memset             
+    1c00 IDATA0     _readvalue          
     5c50 CONST      thread_init_begin   
     5c50 CONST      thread_init_end     
 
@@ -25,15 +25,15 @@ SYMBOLS BY VALUE
        0            ___begin_UDATA0     
        0            ___end_THREAD       
        0            ___end_UDATA0       
-    1c00            ___RAM_Address      
     1c00            ___begin_IDATA0     
-    1c00 IDATA0     _ButtonPressed      
+    1c00            ___RAM_Address      
+    1c00 IDATA0     _readvalue          
     1c02            ___end_IDATA0       
     4000            ___RAM_Size         
-    5c00 ISR        _InterruptService_BUTTON
+    5c00 ISR        _isr                
     5c50 CODE       _main               
     5c50 CONST      thread_init_begin   
     5c50 CONST      thread_init_end     
-    5cc6 CODE       _IncrementVcore     
-    5d68 CODE       _memcpy             
-    5d78 CODE       _memset             
+    5cd0 CODE       _IncrementVcore     
+    5d72 CODE       _memcpy             
+    5d82 CODE       _memset             
