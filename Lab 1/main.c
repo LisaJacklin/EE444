@@ -15,86 +15,76 @@ interrupts and ONE of the timers to implement this functionality.
 note: it is acceptable to set the breakpoint in order to check the time measurement results   
 */
 
-#include <MSP430.h>
-extern int IncrementVcore(void);
-extern int DecrementVcore(void);
+#include <msp430.h>
+extern int IncrementVcore(void); //this is the required extern to up the voltage
+extern int DecrementVcore(void); //required extern to down the voltage
 
-int ButtonPressed;
+int buttonPress = 0;
 
-void
-main(void)
-{
-    //ADD A BREAKPOINT BEFORE THESE INCREMENTS IN ORDER TO STEP THROUGH AND TEST THE VOLTAGE
-    IncrementVcore();                   //this should be used as many times as needed to make sure the voltage 
-    IncrementVcore();                   //is in the correct top range of 2.4 to 3.6 V
-    IncrementVcore();                   // this should raise the max core voltage three times
+void main(void) {
+	IncrementVcore();			//calling the function raises the core voltage
+	IncrementVcore();
+	IncrementVcore();			//rasing the voltage to the max, 3 times incremented
 
+	UCSCTL1 = DCORSEL_6;		//range of frequencies for 25 MHz
+	UCSCTL2 = 762;				// adjusts to 762 to divider to allow 25MHz frequency
+	UCSCTL3 = 0x0000;			// setting n=1
+	UCSCTL4 = SELM_3;			//source from XT1CLK crystal
 
-//Objective 1: setting up MCLK to read close to 25MHz
-   UCSCTL1 = DCORSEL_6;                 //THIS SETS THE FREQUENCY RANGE
-   UCSCTL2 = 762;                       //THIS SETS THE DIVISOR FOR FREQUENCY
+	P11DIR |= BIT1;				// setting output
+	P11SEL |= BIT1;				// sellecting 11.1 as the output to check the base clock frequency
 
-   UCSCTL3 |= SELREF_3;                 //USING REFOCLK AS THE REFERENCED CLOCK
-   UCSCTL4 |= SELM_3 ;                  //SELM 2 SETS THE ACLK SOURCE TO REFOCLK 
+	//note the changed format...
+	P7SEL |= 0x03;				//sets the XT1 pins
 
-   P11DIR |= BIT1;
-   P11SEL |= BIT1;                      // this should set the functionality to periperial
-   P11OUT |= BIT1 ;                     // this should give an output to 11.1
+	//check to make sure that the crystal is operating and working currectly
+	UCSCTL6 &= ~(XT1OFF); //making sure XT1 is not off
+	UCSCTL6 |= XCAP_3; //internal load capacitor 
 
-//Objective 3(Main): measure time between button presses
+	//loop to clear the flags
+	do {
+		UCSCTL7 &= ~(XT1LFOFFG + DCOFFG); //clear the XT1 and DCO flags
+		SFRIFG1 &= ~OFIFG; //clear the OSC fault flag
+	} while ((SFRIFG1 & OFIFG));
 
-  //TIMER SETUP FOR MAIN OBJECTIVE
-   P7SEL |= 0X03;                       //XT1 CLOCK PINS
-   UCSCTL6 &= ~(XT1OFF);                //CHECKING TO SEE IF THE CLOCK IS OFF
-   UCSCTL6 |= XCAP_3;                   //LOAD CAPACITOR SPECIFYER
+	//setup pin 11.0 to check to ACLK which will be used to operate the interrupt
+	P11DIR |= BIT0;
+	P11SEL |= BIT0; 
 
-   P11DIR |= BIT0;                      // sets the bit for the base clock frequency
-   P11SEL |= BIT0;                      //selects the correct clock for the ACLK
+	//lets timer A be set to continuous mode and ACLK as the clock source
+	TA0CTL = TASSEL__ACLK + MC__CONTINUOUS; 
 
-   //sets timer A to depend on the ACLK and to be continuous 
-   TA0CTL = TASSEL__ACLK + MC__CONTINUOUS;
+	//pin 5.0 is the output pin to observe the button interrupt operating
+	P5DIR |= BIT0;
+	P5OUT &= ~BIT0;
 
-   P5DIR |= BIT0;
-   P5OUT &= ~BIT0;
+	P2DIR &= ~(BIT6);			// sets button to input by default
+	P2REN = BIT6;				//pullup resistor required to not burn out the LED
+	P2OUT = BIT6;				//output set to the LED 2.6
+	P2IE |= BIT6;				//enable interrupts for 2.6
 
-  //PUSH BUTTON TO TIME REACTION SETUP
-    //push button is P2.7 so BIT7 is what we are messing with
-    P2DIR &= ~BIT7;                    //sets to input direction
-    P2IE |= BIT7;                      // interrupts are allowed for this button                  
-    P2REN = BIT7;                      //input with pull up resistor 
-    P2OUT = BIT7;                      //also required to enable pull up resistor.
-
-
-//THIS MUST STAY HERE AT THE END OF THE PROGRAM
- _EINT();
- LPM0;
+	_EINT();					//allows interrupts
+	LPM0;						//low power mode zero
 }
 
-void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
-    //when there is an interrupt, the button constant must be changed
-    //button constant is x.
-    if (P2IV == P2IV_P2IFG6) {
-        ButtonPressed ^= BIT0;                      //toggles x when the button is pressed
-    }
-     
-    //when the button constant is toggled to one
-    if (ButtonPressed == 1) {
-        TA0CTL |= TACLR;                //resets the timer; clear the timer on initial press
-        P5OUT ^= BIT0;                  //displays an output when pressed
-    }
+void Button_Interrupt(void) __interrupt[PORT2_VECTOR]{
+	//this will make sure that the flag will be clear or will set the button to zero
+	if (P2IV == P2IV_P2IFG6) {
+		buttonPress ^= BIT0; //each time button is pressed, toggle readvalue
+	}
 
-    //if the button const is toggled to zero
-    if (ButtonPressed == 0) {
-        P5OUT ^= BIT0;                  //displays an output when button at zero
-        ButtonPressed = 0;                          //verify and set the loop again.
-    }
+	//note that these two are swapped from the original from 0 to 1 statements
+	//first press will set to one
+	if (buttonPress == 1) {
+	TA0CTL |= TACLR; //clears when initial pressing
+	P5OUT ^= BIT0;
+	}
 
-    //idea 1: add a __delay_cycles(); to the first button press for it to show on the 
-    //oscilliscope
-
-    //idea 2: potentially add a break; into the code...?
-
-
-    //the last thing you should/could do is add a clear to the end that way all interrupts are cleared for the next service
+	//second press will set to zero 
+	if (buttonPress == 0) { //if the button is 0, toggle
+	P5OUT ^= BIT0;
+	buttonPress = 0;
+	}
+	//consider adding in debounce if issues still percist
 }
 
