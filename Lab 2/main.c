@@ -41,12 +41,13 @@ IncrementVcore();
     //This is the output destination of the signal from the MCLK
    P11DIR |= BIT2;
    P11SEL |= BIT2;                    // this should set the functionality to periperial
-   P11OUT |= BIT2 ;                   // this should give an output to 11.1
+  // P11OUT |= BIT2 ;                   // this should give an output to 11.1
 
  //TIMER SETUP FOR MAIN OBJECTIVE
    //sets timer A1 to depend on the SMCLK and to be continuous 
    TA1CTL = TASSEL__SMCLK + MC__UP;   //THE UP SO WE CAN SET THE TOP VALUE COUNT IN CCR0
    //ta1ctl should apply for all timer A's
+   //TAIE |=
    TA1CCTL0 = OUTMOD2;                //THIS SHOULD SET TO TOGGLE/RESET MODE
    
    //SETTING UP THE 25% DUTY CYCLE
@@ -68,7 +69,7 @@ IncrementVcore();
    P7SEL |= BIT3;                     //PIN 8.5 SELECTED AS TIMERA1 OUTPUT                   
    P7DIR |= BIT3;                     
 
-//_EINT();
+_EINT();
 LPM0;                                 //THIS IS WHAT WILL BE CHANGING DURING THIS LAB
 
 }

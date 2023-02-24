@@ -82,8 +82,8 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="3" y="71" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="0" top="27" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="396" useTextEdit="1" openedFrom="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 2/main.c" useBinaryEdit="0" left="0" path="../../../../AppData/Local/Rowley Associates Limited/CrossWorks for MSP430/v3/packages/include/msp430f5438a.h" selected="1" top="471" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="14" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="1" top="18" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="396" useTextEdit="1" openedFrom="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 2/main.c" useBinaryEdit="0" left="0" path="../../../../AppData/Local/Rowley Associates Limited/CrossWorks for MSP430/v3/packages/include/msp430f5438a.h" selected="0" top="471" codecName="Default"/>
  </Files>
  <MSP430CrossStudioWindow activeProject="Lab2" fileDialogDefaultFilter="*.c" autoConnectTarget="MSP-FET430UIF(V3)" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 1" debugSearchPath="" autoConnectCapabilities="528255"/>
 </session>

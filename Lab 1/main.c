@@ -20,6 +20,7 @@ extern int IncrementVcore(void);
 extern int DecrementVcore(void);
 
 volatile int ButtonPressed = 0;
+volatile unsigned int time = 0;
 
 void
 main(void)
@@ -39,7 +40,7 @@ main(void)
 
    P11DIR |= BIT1;
    P11SEL |= BIT1;                      // this should set the functionality to periperial
-   P11OUT |= BIT1 ;                     // this should give an output to 11.1
+   //P11OUT |= BIT1 ;                     // this should give an output to 11.1
 
 //Objective 3(Main): measure time between button presses
 
@@ -48,21 +49,24 @@ main(void)
    UCSCTL6 &= ~(XT1OFF);                //CHECKING TO SEE IF THE CLOCK IS OFF
    UCSCTL6 |= XCAP_3;                   //LOAD CAPACITOR SPECIFYER
 
-   P11DIR |= BIT0;                      // sets the bit for the base clock frequency
-   P11SEL |= BIT0;                      //selects the correct clock for the ACLK
+    do {
+    UCSCTL7 &= ~(XT1LFOFFG + DCOFFG); //clear the XT1 and DCO flags
+    SFRIFG1 &= ~OFIFG; //clear the OSC fault flag
+    } while ((SFRIFG1 & OFIFG));
 
    //sets timer A to depend on the ACLK and to be continuous 
    TA0CTL = TASSEL__SMCLK + MC__CONTINUOUS;
 
+   //output pin for the button operations
    P5DIR |= BIT0;
    P5OUT &= ~BIT0;
 
   //PUSH BUTTON TO TIME REACTION SETUP
     //push button is P2.7 so BIT7 is what we are messing with
-    P2DIR &= ~BIT6;                    //sets to input direction
-    P2IE |= BIT6;                      // interrupts are allowed for this button                  
-    P2REN = BIT6;                      //input with pull up resistor 
-    P2OUT = BIT6;                      //also required to enable pull up resistor.
+    P2DIR &= ~BIT7;                    //sets to input direction
+    P2IE |= BIT7;                      // interrupts are allowed for this button                  
+    P2REN = BIT7;                      //input with pull up resistor 
+    P2OUT = BIT7;                      //also required to enable pull up resistor.
 
 
 //THIS MUST STAY HERE AT THE END OF THE PROGRAM
@@ -74,34 +78,28 @@ main(void)
 void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
     //when there is an interrupt, the button constant must be changed
     //button constant is x.
-    if (P2IV == P2IV_P2IFG6) {
-    //    ButtonPressed ^= BIT0;                      //toggles x when the button is pressed
-   // }
+    if (P2IV == P2IV_P2IFG7) {
+        //ButtonPressed ^= BIT0;                      //toggles x when the button is pressed
+    
      
-    //when the button constant is toggled to one
-    if (ButtonPressed == 0) {
-        TA0CTL |= TACLR;                             //resets the timer; clear the timer on initial press
+      //if the button const is toggled to zero
+      if (ButtonPressed == 0) {
+          TA0CTL |= TACLR;                             //resets the timer; clear the timer on initial press
+          time = 0;
+          P5OUT ^= BIT0;                              //displays an output when button at zero
+          ButtonPressed = 1;                          //verify and set the loop again.
+      }
+
+      //when the button constant is toggled to one
+      //if (ButtonPressed == 1) {
+      else {
         P5OUT ^= BIT0;  
-        // __delay_cycles(200000);
-        ButtonPressed = 1;                             //displays an output when pressed
-                 
-    }
+        time = TA0R;  
+        ButtonPressed = 0;           
+      }
 
+  }
 
-    //if the button const is toggled to zero
-    if (ButtonPressed == 1) {
-        P5OUT ^= BIT0;                              //displays an output when button at zero
-        ButtonPressed = 0;                          //verify and set the loop again.
-        1+1;
-    }
-
-    //idea 1: add a __delay_cycles(); to the first button press for it to show on the 
-    //oscilliscope
-
-    //idea 2: potentially add a break; into the code...?
-
-
-    //the last thing you should/could do is add a clear to the end that way all interrupts are cleared for the next service
 }
-}
+
 

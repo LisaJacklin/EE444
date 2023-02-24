@@ -1,7 +1,9 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks/>
- <Breakpoints groups="Breakpoints" active_group="Breakpoints"/>
+ <Breakpoints groups="Breakpoints" active_group="Breakpoints">
+  <BreakpointListItem trigger="" line="98" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="main.c" useHWbreakpoint="false"/>
+ </Breakpoints>
  <EEMRegistersWindow>
   <EEMRegisters generalClockControl="2e" moduleClockControl="40f"/>
  </EEMRegistersWindow>
@@ -40,7 +42,7 @@
  </Project>
  <Register1>
   <RegisterWindow visibleNodes="CPU Registers/PC;CPU Registers/SP;CPU Registers/SR;CPU Registers/R4;CPU Registers/R5;CPU Registers/R6;CPU Registers/R7;CPU Registers/R8;CPU Registers/R9;CPU Registers/R10;CPU Registers/R11;CPU Registers/R12;CPU Registers/R13;CPU Registers/R14;CPU Registers/R15" binaryNodes="" asciiNodes="" openNodes="CPU Registers" name="Lab0" decimalNodes="" octalNodes="" unsignedNodes=""/>
-  <RegisterWindow visibleNodes="CPU Registers/PC;CPU Registers/SP;CPU Registers/SR;CPU Registers/R4;CPU Registers/R5;CPU Registers/R6;CPU Registers/R7;CPU Registers/R8;CPU Registers/R9;CPU Registers/R10;CPU Registers/R11;CPU Registers/R12;CPU Registers/R13;CPU Registers/R14;CPU Registers/R15;UCS/UCSCTL0;UCS/UCSCTL1;UCS/UCSCTL2;UCS/UCSCTL3;UCS/UCSCTL4;UCS/UCSCTL5;UCS/UCSCTL6;UCS/UCSCTL7;UCS/UCSCTL8;SFR/SFRIE1;SFR/SFRIFG1;SFR/SFRRPCR;TA0/TA0CTL;TA0/TA0CCTL0;TA0/TA0CCTL1;TA0/TA0CCTL2;TA0/TA0CCTL3;TA0/TA0CCTL4;TA0/TA0R;TA0/TA0CCR0;TA0/TA0CCR1;TA0/TA0CCR2;TA0/TA0CCR3;TA0/TA0CCR4;TA0/TA0EX0;TA0/TA0IV" binaryNodes="" asciiNodes="" openNodes="UCS;UCS/UCSCTL0;SFR;TA0" name="Executable_1" decimalNodes="" octalNodes="" unsignedNodes=""/>
+  <RegisterWindow visibleNodes="UCS/UCSCTL0;UCS/UCSCTL1;UCS/UCSCTL2;UCS/UCSCTL3;UCS/UCSCTL4;UCS/UCSCTL5;UCS/UCSCTL6;UCS/UCSCTL7;UCS/UCSCTL8;SFR/SFRIE1;SFR/SFRIFG1;SFR/SFRRPCR;TA0/TA0CTL;TA0/TA0CCTL0;TA0/TA0CCTL1;TA0/TA0CCTL2;TA0/TA0CCTL3;TA0/TA0CCTL4;TA0/TA0R;TA0/TA0CCR0;TA0/TA0CCR1;TA0/TA0CCR2;TA0/TA0CCR3;TA0/TA0CCR4;TA0/TA0EX0;TA0/TA0IV" binaryNodes="" asciiNodes="" openNodes="UCS;UCS/UCSCTL0;SFR;TA0" name="Executable_1" decimalNodes="" octalNodes="" unsignedNodes=""/>
  </Register1>
  <Register2>
   <RegisterWindow visibleNodes="CPU Registers/PC;CPU Registers/SP;CPU Registers/SR;CPU Registers/R4;CPU Registers/R5;CPU Registers/R6;CPU Registers/R7;CPU Registers/R8;CPU Registers/R9;CPU Registers/R10;CPU Registers/R11;CPU Registers/R12;CPU Registers/R13;CPU Registers/R14;CPU Registers/R15" binaryNodes="" asciiNodes="" openNodes="CPU Registers" name="Lab0" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -76,7 +78,7 @@
  <Files>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="36" useTextEdit="1" openedFrom="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 1/main.c" useBinaryEdit="0" left="0" path="DecrementVcore.c" selected="0" top="11" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="95" useTextEdit="1" openedFrom="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 1/main.c" useBinaryEdit="0" left="0" path="IncrementVcore.c" selected="0" top="70" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="17" y="86" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="1" top="62" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="104" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="1" top="74" codecName="Default"/>
   <SessionOpenFile windowGroup="DockBottom" x="13" y="2674" useTextEdit="1" openedFrom="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 1/main.c" useBinaryEdit="0" left="0" path="../../../../AppData/Local/Rowley Associates Limited/CrossWorks for MSP430/v3/packages/include/msp430f5438a.h" selected="0" top="2663" codecName="Default"/>
  </Files>
  <MSP430CrossStudioWindow activeProject="Executable_1" fileDialogDefaultFilter="*.c" autoConnectTarget="MSP-FET430UIF(V3)" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 2" debugSearchPath="" autoConnectCapabilities="528255"/>
