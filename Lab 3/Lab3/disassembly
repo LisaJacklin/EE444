@@ -1,0 +1,258 @@
+--- main.c -- 93 -------------------------------------------
+void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
+//this must LET THE BUTTON SWITCH START AND CLEAR THE TIMER
+//this stars and clear the timer each time the button is pressed.
+if(P2IV==P2IV_P2IFG7) {
+    b29010001e02        CMP.W     #0x0010, &0x021e
+    0220                JNZ       0x05c0c
+buttonpressed ^= BIT0; //each time button is pressed, toggle BUTTONPRESS
+    92e3001c            XOR.W     #1, &0x1c00
+--- main.c -- 99 -------------------------------------------
+}
+//this will clear the timer before counting for 8 samples....?
+if (buttonpressed==1) {
+    9293001c            CMP.W     #1, &0x1c00
+    0420                JNZ       0x05c1a
+TA0CTL|=TACLR; //this will clear the timer when the button is pressed
+    a2d24003            BIS.W     #4, &0x0340
+P5OUT ^= BIT0;
+    d2e34202            XOR.B     #1, &0x0242
+--- main.c -- 104 ------------------------------------------
+}
+//do I need to press the button twice? no...
+if (buttonpressed==0) { //if the button is 0, toggle
+    8293001c            CMP.W     #0, &0x1c00
+    0420                JNZ       0x05c28
+P5OUT ^= BIT0;
+    d2e34202            XOR.B     #1, &0x0242
+buttonpressed = 0;
+    8243001c            CLR.W     &0x1c00
+    0013                RETI
+--- main.c -- 110 ------------------------------------------
+}
+}
+//THEN SETUP THE ADC12 ISR
+void InterruptSeverice_ADC12A(void) __interrupt [ADC12_VECTOR] {
+    0013                RETI
+--- crt0.asm -- 44 -----------------------------------------
+; Executed upon reset
+__reset proc
+; Turn off watchdog. You can enable it in main() if required.
+mov.w #WDTPW+WDTHOLD, &WDTCTL
+    b240805a5c01        MOV.W     #0x5a80, &0x015c
+--- crt0.asm -- 49 -----------------------------------------
+; Set up stack.
+mov.w #___RAM_Address+___RAM_Size, sp
+    3140005c            MOV.W     #0x5c00, SP
+--- crt0.asm -- 52 -----------------------------------------
+; Copy from initialised data section to data section.
+LINKIF SIZEOF(IDATA0)
+mov.w #SFB(IDATA0), r15
+    3f40001c            MOV.W     #0x1c00, R15
+mov.w #data_init_begin, r14
+    3e40505c            MOV.W     #0x5c50, R14
+mov.w #data_init_end-data_init_begin, r13
+    3d400200            MOV.W     #0x0002, R13
+callx #_memcpy
+    b0139c5d            CALLA     #0x05d9c <_memcpy>
+--- crt0.asm -- 79 -----------------------------------------
+mov.w #args, r14
+callx #_debug_getargs
+mov.w #args, r14
+#else
+mov.w #0, r15
+    0f43                CLR.W     R15
+mov.w #0, r14
+    0e43                CLR.W     R14
+--- crt0.asm -- 85 -----------------------------------------
+#endif
+; Call user entry point void main(void).
+callx #_main
+    b013525c            CALLA     #0x05c52 <_main>
+--- crt0.asm -- 93 -----------------------------------------
+mov r5, r15
+callx #_debug_exit
+#endif
+; If main() returns, kick off again.
+jmp __reset
+    ee3f                JMP       0x05c2c <__reset>
+    0000                BRA       PC
+--- main.c -- 21 -------------------------------------------
+int buttonpressed = 0;
+void main(void) {
+//in order to reach the required frequency level, the voltage must be bumped up.
+IncrementVcore();
+    b013fa5c            CALLA     #0x05cfa <_IncrementVcore>
+IncrementVcore();
+    b013fa5c            CALLA     #0x05cfa <_IncrementVcore>
+IncrementVcore();
+    b013fa5c            CALLA     #0x05cfa <_IncrementVcore>
+--- main.c -- 28 -------------------------------------------
+//1. SET SMCLK AND MCLK TO BE 16 MHZ
+//first setting up MCLK and SMCLK to 14 MHz
+UCSCTL1 = DCORSEL_6; //DOUBLE CHECK THAT THIS IS THE CORRECT SETTING RANGE
+    b24060006201        MOV.W     #0x0060, &0x0162
+UCSCTL2 = 487; //N = 487 SO n+1 = 488. this is the frequency divider
+    b240e7016401        MOV.W     #0x01e7, &0x0164
+UCSCTL3 = SELREF_0; //AUTOMATICALLY SETS TO ZERO HERE FOR THE USE OF THE XT1CLK
+    82436601            CLR.W     &0x0166
+--- main.c -- 35 -------------------------------------------
+//THIS SHOULD SET BOTH SMCLK AND MCLK TO BE DEPENDENT ON THE crystal clock
+UCSCTL4 = SELS__XT1CLK + SELM__XT1CLK;
+    82436801            CLR.W     &0x0168
+--- main.c -- 37 -------------------------------------------
+P7SEL |= (BIT0 + BIT1); //THIS MUST BE SET FOR XT1CLK EXTERNAL TO WORK PROPERLY
+    f2d003006a02        BIS.B     #0x0003, &0x026a
+UCSCTL6 &=~BIT0; //THIS SETS THAT THE EXTERNAL CLOCK CRYSTAL IS ON FOR USAGE.
+    92c36c01            BIC.W     #1, &0x016c
+--- main.c -- 40 -------------------------------------------
+//SETTING UP PIN TO ALLOW FOR THE FREQUENCY TO BE CHECKED.
+P11DIR |= BIT0; // sets the bit for the base clock frequency
+    d2d3a402            BIS.B     #1, &0x02a4
+P11SEL |= BIT0; //selects the correct clock for the ACLK
+    d2d3aa02            BIS.B     #1, &0x02aa
+--- main.c -- 45 -------------------------------------------
+// 2. SETUP BUTTON SWITCH S1
+//SETUP BUTTON SWITCH S2 -- BOARD 3 DOES NOT HAVE A S1 BUTTON
+//note THAT THE BUTTON SWITCH S2 IS PIN 2.7
+P2DIR &= ~BIT7; //sets to input direction
+    f2f07f000502        AND.B     #0x007f, &0x0205
+P2IES &=~ BIT7; //allows interrupts for this button
+    f2f07f001902        AND.B     #0x007f, &0x0219
+P2IE |= BIT7; // interrupts are allowed for this button
+    f2d080001b02        BIS.B     #0x0080, &0x021b
+P2REN = BIT7; //input with pull up resistor
+    f24080000702        MOV.B     #0x0080, &0x0207
+P2OUT = BIT7; //also required to enable pull up resistor.
+    f24080000302        MOV.B     #0x0080, &0x0203
+--- main.c -- 54 -------------------------------------------
+//SET TIMER A FOR US TO BE ABLE TO SEE THE RESULTS TAKEN FOR ANY OF THE ADC12 TIMER....?
+//TIMER SETUP FOR MAIN OBJECTIVE
+P7SEL |= 0X03; //XT1 CLOCK PINS
+    f2d003006a02        BIS.B     #0x0003, &0x026a
+UCSCTL6 &= ~(XT1OFF); //CHECKING TO SEE IF THE CLOCK IS OFF
+    92c36c01            BIC.W     #1, &0x016c
+UCSCTL6 |= XCAP_3; //LOAD CAPACITOR SPECIFYER
+    b2d00c006c01        BIS.W     #0x000c, &0x016c
+--- main.c -- 61 -------------------------------------------
+do {
+UCSCTL7 &= ~(XT1LFOFFG + DCOFFG); //clear the XT1 and DCO flags
+    b2f0fcff6e01        AND.W     #0xfffc, &0x016e
+SFRIFG1 &= ~OFIFG; //clear the OSC fault flag
+    a2c30201            BIC.W     #2, &0x0102
+} while ((SFRIFG1 & OFIFG));
+    a2b30201            BIT.W     #2, &0x0102
+    f823                JNZ       0x05cb2
+--- main.c -- 66 -------------------------------------------
+//sets timer A to depend on the SMCLK and to be continuous
+TA0CTL = TASSEL__SMCLK + MC__CONTINUOUS;
+    b24020024003        MOV.W     #0x0220, &0x0340
+--- main.c -- 70 -------------------------------------------
+//NOW, SETTING UP THE ADC12
+//noting to set the clk to 16 cycles in the sampling period.
+//ADJUST THE SAMPLING PERIOD, CLOCK IS ON, AND BASE IS SET TO SMCLK.
+ADC12CTL0 = (ADC12SHT02_H + ADC12ON_L + ADC12ENC_L +ADC12REFON_L ); //note adc12ref2_5 not included otherwise it becomes 1 or 2.5V
+    b24036000007        MOV.W     #0x0036, &0x0700
+ADC12CTL1 |= (ADC12SSEL_3 + ADC12SHS_1); //check to make sure this works correctly again
+    b2d018040207        BIS.W     #0x0418, &0x0702
+ADC12IE |= BIT0; //enables inTerrupts
+    92d30c07            BIS.W     #1, &0x070c
+ADC12MCTL0 = ADC12SREF0; //THIS SHOULD SET THE REFERENCE VOLTAGE...VERIFY THIS IS WHAT i NEED TO INCLUDE
+    f24010001007        MOV.B     #0x0010, &0x0710
+--- main.c -- 78 -------------------------------------------
+//note THAT 1 IS OFF FOR THE SENSOR
+ADC12CTL2 = ADC12TCOFF; //THIS SHOULD SET THE TEMPERATURE SENSOR TO BE ONE
+    b24080000407        MOV.W     #0x0080, &0x0704
+ADC12MCTL0 = ADC12INCH_10; //THIS IS THE TEMPERATURE DIODE
+    f2400a001007        MOV.B     #0x000a, &0x0710
+--- main.c -- 81 -------------------------------------------
+P6SEL |= BIT0; //THIS SHOULD BE THE OUTPUT FOR ADC
+    d2d34b02            BIS.B     #1, &0x024b
+P1DIR |= BIT0;
+    d2d30402            BIS.B     #1, &0x0204
+--- main.c -- 85 -------------------------------------------
+_EINT();
+    32d2                EINT
+LPM0;
+    32d01000            BIS.W     #0x0010, R2
+    1001                RETA
+--- incrementvcore.c -- 13 ---------------------------------
+unsigned int PMMRIE_backup,SVSMHCTL_backup;
+unsigned short old_level;
+// read the previous Vcore level
+old_level = PMMCTL0 & (PMMCOREV_3);
+    1c422001            MOV.W     &0x0120, R12
+    3cf00300            AND.W     #0x0003, R12
+    0f4c                MOV.W     R12, R15
+--- incrementvcore.c -- 18 ---------------------------------
+if (old_level < PMMCOREV_3) {
+    3f900300            CMP.W     #0x0003, R15
+    472c                JC        0x05d98
+--- incrementvcore.c -- 20 ---------------------------------
+// Enable write access to PMM registers
+PMMCTL0_H = 0xA5;
+    f240a5002101        MOV.B     #0x00a5, &0x0121
+--- incrementvcore.c -- 22 ---------------------------------
+
+// SAVE the previous content of PMM Reset and Interrupt Enable (PMMRIE) register
+PMMRIE_backup = PMMRIE;
+    1e422e01            MOV.W     &0x012e, R14
+--- incrementvcore.c -- 28 ---------------------------------
+// SVM low-side (Vcore) voltage level reached interrupt (SVMLVLRIE)
+// SVM high-side (DVcc) voltage level reached interrupt (SVMHVLRIE)
+// SVM high-side (DVcc) voltage level reached POR interrupt (SVMHVLRPE)
+// - there will be a POR...
+PMMRIE &= ~(SVSMHDLYIE | SVSMLDLYIE | SVMLVLRIE | SVMHVLRIE | SVMHVLRPE);
+    b2f0aadf2e01        AND.W     #0xdfaa, &0x012e
+--- incrementvcore.c -- 33 ---------------------------------
+
+// SAVE the previous content of (SVSMHCTL) register
+SVSMHCTL_backup = SVSMHCTL;
+    1d422401            MOV.W     &0x0124, R13
+--- incrementvcore.c -- 36 ---------------------------------
+
+// Clear the following flags:
+// SVM high-side interrupt flag
+// SVS and SVM high-side delay expired interrupt flag
+PMMIFG &= ~(SVMHIFG | SVSMHDLYIFG);
+    b2f0cfff2c01        AND.W     #0xffcf, &0x012c
+--- incrementvcore.c -- 42 ---------------------------------
+// Set SVM high-side to a new level and check if a VCore increase is possible
+// Enable high-side SVM
+// Enable high-side SVS
+// Set the new voltage level for DVcc
+SVSMHCTL = SVMHE | SVSHE | (SVSMHRRL0 * (old_level+1));
+    0c4f                MOV.W     R15, R12
+    1c53                ADD.W     #1, R12
+    3cd00044            BIS.W     #0x4400, R12
+    824c2401            MOV.W     R12, &0x0124
+--- incrementvcore.c -- 47 ---------------------------------
+
+// Wait until SVM high-side delay time expires
+// (earlier, we disabled an interrupt for this)
+while ((PMMIFG & SVSMHDLYIFG) == 0);
+    b2b010002c01        BIT.W     #0x0010, &0x012c
+    fc27                JZ        0x05d30
+--- incrementvcore.c -- 51 ---------------------------------
+
+// Check if a VCore increase is possible
+// a better option would be to check once, and recover previous settings*
+while ((PMMIFG & SVMHIFG) == SVMHIFG);
+    b2b020002c01        BIT.W     #0x0020, &0x012c
+    fc23                JNZ       0x05d38
+--- incrementvcore.c -- 55 ---------------------------------
+
+// Set SVM low side to new level
+// Enable low-side SVM
+// Set the new Vcore voltage
+SVSMLCTL = SVMLE | (SVSMLRRL0 * (old_level+1));
+    0c4f                MOV.W     R15, R12
+    1c53                ADD.W     #1, R12
+    3cd00040            BIS.W     #0x4000, R12
+    824c2601            MOV.W     R12, &0x0126
+--- incrementvcore.c -- 60 ---------------------------------
+
+// Wait until SVM low-side delay time expires
+while ((PMMIFG & SVSMLDLYIFG) == 0);
+    92b32c01            BIT.W     #1, &0x012c
+    fd27                JZ        0x05d4c
