@@ -1,41 +1,53 @@
 
 SYMBOLS BY NAME
 
-    5d06 CODE       _IncrementVcore     
+    5d38 CODE       _IncrementVcore     
     5c00 ISR        _InterruptService_BUTTON
-    5c30 ISR        _InterruptSeverice_ADC12A
+    5c28 ISR        _InterruptSeverice_ADC12A
     1c00            ___RAM_Address      
     4000            ___RAM_Size         
     1c00            ___begin_IDATA0     
        0            ___begin_THREAD     
-       0            ___begin_UDATA0     
+    1c02            ___begin_UDATA0     
+     4c0            ___crt_mpy          
+     4c8            ___crt_op2          
+     4ca            ___crt_reslo        
     1c02            ___end_IDATA0       
        0            ___end_THREAD       
-       0            ___end_UDATA0       
+    1c04            ___end_UDATA0       
+    5dda CODE       ___int16_mul        
+    5df0 CODE       ___int16_mul_asgn   
     1c00 IDATA0     _buttonpressed      
-    5c64 CODE       _main               
-    5da8 CODE       _memcpy             
-    5db8 CODE       _memset             
-    5c64 CONST      thread_init_begin   
-    5c64 CONST      thread_init_end     
+    5c9a CODE       _main               
+    5e00 CODE       _memcpy             
+    5e10 CODE       _memset             
+    1c02 UDATA0     _temperature        
+    5c9a CONST      thread_init_begin   
+    5c9a CONST      thread_init_end     
 
 
 SYMBOLS BY VALUE
 
        0            ___begin_THREAD     
-       0            ___begin_UDATA0     
        0            ___end_THREAD       
-       0            ___end_UDATA0       
-    1c00            ___RAM_Address      
+     4c0            ___crt_mpy          
+     4c8            ___crt_op2          
+     4ca            ___crt_reslo        
     1c00            ___begin_IDATA0     
+    1c00            ___RAM_Address      
     1c00 IDATA0     _buttonpressed      
+    1c02            ___begin_UDATA0     
     1c02            ___end_IDATA0       
+    1c02 UDATA0     _temperature        
+    1c04            ___end_UDATA0       
     4000            ___RAM_Size         
     5c00 ISR        _InterruptService_BUTTON
-    5c30 ISR        _InterruptSeverice_ADC12A
-    5c64 CONST      thread_init_end     
-    5c64 CODE       _main               
-    5c64 CONST      thread_init_begin   
-    5d06 CODE       _IncrementVcore     
-    5da8 CODE       _memcpy             
-    5db8 CODE       _memset             
+    5c28 ISR        _InterruptSeverice_ADC12A
+    5c9a CONST      thread_init_end     
+    5c9a CODE       _main               
+    5c9a CONST      thread_init_begin   
+    5d38 CODE       _IncrementVcore     
+    5dda CODE       ___int16_mul        
+    5df0 CODE       ___int16_mul_asgn   
+    5e00 CODE       _memcpy             
+    5e10 CODE       _memset             
