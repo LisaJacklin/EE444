@@ -1,0 +1,47 @@
+
+SYMBOLS BY NAME
+
+    1c2e UDATA0     _ButtonPressed      
+    5d68 CODE       _IncrementVcore     
+    5c22 ISR        _InterruptService_BUTTON
+    5c00 ISR        _USC1_ISR           
+    1c00            ___RAM_Address      
+    4000            ___RAM_Size         
+    1c00            ___begin_IDATA0     
+       0            ___begin_THREAD     
+    1c2e            ___begin_UDATA0     
+    1c2e            ___end_IDATA0       
+       0            ___end_THREAD       
+    1c34            ___end_UDATA0       
+    1c30 UDATA0     _counter            
+    5cc6 CODE       _main               
+    5e0a CODE       _memcpy             
+    5e1a CODE       _memset             
+    1c00 IDATA0     _message            
+    1c32 UDATA0     _messageInc         
+    5cc6 CONST      thread_init_begin   
+    5cc6 CONST      thread_init_end     
+
+
+SYMBOLS BY VALUE
+
+       0            ___begin_THREAD     
+       0            ___end_THREAD       
+    1c00            ___begin_IDATA0     
+    1c00            ___RAM_Address      
+    1c00 IDATA0     _message            
+    1c2e            ___begin_UDATA0     
+    1c2e            ___end_IDATA0       
+    1c2e UDATA0     _ButtonPressed      
+    1c30 UDATA0     _counter            
+    1c32 UDATA0     _messageInc         
+    1c34            ___end_UDATA0       
+    4000            ___RAM_Size         
+    5c00 ISR        _USC1_ISR           
+    5c22 ISR        _InterruptService_BUTTON
+    5cc6 CONST      thread_init_end     
+    5cc6 CODE       _main               
+    5cc6 CONST      thread_init_begin   
+    5d68 CODE       _IncrementVcore     
+    5e0a CODE       _memcpy             
+    5e1a CODE       _memset             
