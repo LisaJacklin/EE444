@@ -22,10 +22,10 @@ extern int IncrementVcore(void);
 //ones                      0123456789012345678901234567890123456789012345678901234567890123    the rest of this is to go to the next line 
 volatile char message[] = {"000. The temperature is 00 *C. Running time is 0:00  "};
 
+//all variables are defined here before being used elseware.
 volatile int messageInc = 0;                                      //this will increment the char through the msg above
 int counter = 0;
-int ButtonPressed;
-int result;
+int ButtonPressed, result,duration, timer;
 unsigned int ref30;// = *((unsigned int *)0x01A1A);
 unsigned int ref85;// = *((unsigned int *)0x01A1C);
 float slope;// = (85 - 30) / (ref85 - ref30);
@@ -42,6 +42,7 @@ void main(void) {
   IncrementVcore();
   IncrementVcore();
 
+  //these two are the new line and carriage that must be added to the message.
   message[52] = 10;
   message[53] = 13;
 
@@ -82,12 +83,14 @@ void main(void) {
   //PUSH BUTTON 
     //push button is P2.7 so BIT7 is what we are messing with
     P2DIR &= ~BIT7;                              //sets to input direction
+    P2SEL &= ~BIT7;                              //confirmation of I/O mode selection
     P2IE |= BIT7;                                // interrupts are allowed for this button                  
+    P2IES |= BIT7;                               //falling edge trigger
     P2REN = BIT7;                                //input with pull up resistor 
     P2OUT = BIT7;                                //also required to enable pull up resistor.
 
 //SETTING UP THE ADC12 NOW TO WORK WITH SMCLK
-    REFCTL0 = REFGENACT + REFMSTR + REFVSEL_0 + REFON;
+    REFCTL0 = REFGENACT + REFMSTR + REFVSEL_0 + REFON;//reference voltage setup 1.5V and output mode
 
     ADC12CTL0 = ADC12SHT0_15 + ADC12MSC + ADC12ON;          //TURNS ON THE ADC12, AND USES 64 ADC12CLK CYCLES
     ADC12CTL1 = ADC12SHS_0 + ADC12SHP + ADC12SSEL_3 + ADC12CONSEQ_1; //THIS SHOULD SET SMCLK AS THE BASE, SINGLE/SINGLE, AND SAMPLING TIMER
@@ -115,15 +118,31 @@ void main(void) {
 //I can confirm that the IRS for the button can be accessed
 void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
     if (P2IV == P2IV_P2IFG7) {
-      if (ButtonPressed == 0) {
-       // UCA1TXBUF = UCA1RXBUF; //used to make sure that output is shown when button is pressed
-       //UCA1TXBUF = message[messageInc];             //INITIATE VALUES TO BE SENT TO THE usc1 ISR     
-       //TA1CTL = TACLR;                              //THIS SHOULD RESET THE TIMER FOR TIME SPAN       
+      if (ButtonPressed == 0) { //this extra if statement is really not needed, but keeping for now
+          timer ^= BIT0;
+          counter++;
+          //displays counter values to user
+          message[0] = (counter / 100) + '0';
+          message[1] = (counter % 100)/10 + '0';
+          message[2] = (counter%10)+'0';
+
+          // timer values
+          message[] = time / 60 + '0';
+          message[] = (time % 60) / 10 + '0';
+          message[] = time % 10 + '0';
+          //begin sending the message to the user
+          UCA1TXBUF = message[messageInc];
+
+
+
        ButtonPressed = 1;                          //verify and set the loop again.
-       ADC12CTL0 |= ADC12SC;
+       ADC12CTL0 |= ADC12SC;                       //sampling and conversion begins
+
        
       } 
    }
+duration = TA0R;  //will display the total time in duration variable.
+
 }
 
 void USC1_ISR(void) __interrupt[USCI_A1_VECTOR] {                                          
@@ -149,11 +168,8 @@ void USC1_ISR(void) __interrupt[USCI_A1_VECTOR] {
 }
 
 //TIMER A INTERRUPT SERVICE ROUTINE
-  void TimerA_ISR (void) __interrupt [TIMER1_A0_VECTOR] {
-  //in here the timer will be set to test between when starting and ending the timer...?                          //THIS ALLOWS MULTIPLE SAMPLE CONVERSIONS
-  //I need to set this up CORRECTLY so I can actually go through and do some work
-
-
+void TimerA_ISR(void) __interrupt[TIMER1_A0_VECTOR]{
+  result++;                                        //update the timer results for next button press
   }
 
 //ACD12 INTERRUPT SERVICE ROUTINE
@@ -161,26 +177,19 @@ void USC1_ISR(void) __interrupt[USCI_A1_VECTOR] {
 
     unsigned int adcAverage;
     //give the result to the memory location....
-    //ALSO NEED TO ENABLE TO TRANSMITTING INTERRUPT HERE
-   
-   //WILL THESE ACTUALLY GO THROUGH AND SAVE THE SAMPLES?
+  if (ADC12IV == ADC12IV_ADC12IFG7) { // CHECKS TO SEE IF THE FLAG HAS BEEN SET BEFORE TESTING AND AVERAGING
+      adcAverage = (ADC12MEM0 / 8) + (ADC12MEM1 / 8) + (ADC12MEM2 / 8) + (ADC12MEM3 / 8) + (ADC12MEM4 / 8) + (ADC12MEM5 / 8) + (ADC12MEM6 / 8) + (ADC12MEM7 / 8);
+      temperature = (adcAverage - ref30) * slope + 30;
 
-    adcAverage = (ADC12MEM0 / 8) + (ADC12MEM1 / 8) + (ADC12MEM2 / 8) + (ADC12MEM3 / 8) + (ADC12MEM4 / 8) + (ADC12MEM5 / 8) + (ADC12MEM6 / 8) + (ADC12MEM7 / 8);
-    temperature = (adcAverage - ref30) * slope + 30;
 
-//THESE HAVE TO CHANGE BECAUSE VALUES THAT OUTPUT ARE NO WHERE NEAR THE CORRECT VALUES WE ARE LOOKING FOR
-    //THESE SHOULD DISPLAY THE COUNTUP OF HOW MANY BUTTON PRESSES HAVE OCCURRED.
-    message[0] = (counter/100) + '0';  
-    message[1] = (counter/10) + '0'; 
-    message[2] = (counter) + '0'; 
+      // temperature values
+      message[24] = temperature / 10 + '0'; //TENS PLACE
+      message[25] = (temperature % 10) + '0'; //singles place
 
-  // temperature values
-    message[24] = (temperature%10)/10 + '0';  
-    message[25] = (temperature%10) + '0';
-     
-// timer values
+      //lastly, the USCI_A1 interrupts should be allowed to take again/no longer blocked.
+      UCA1IE |= UCTXIE;
+    }
 
-    UCA1TXBUF = message[messageInc];
   }
 
-         
+  
