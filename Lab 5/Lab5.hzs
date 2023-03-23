@@ -89,7 +89,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="154" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="1" top="132" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="154" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="1" top="174" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="8" y="244" useTextEdit="1" openedFrom="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 5/main.c" useBinaryEdit="0" left="0" path="../../../../AppData/Local/Rowley Associates Limited/CrossWorks for MSP430/v3/packages/include/msp430f5438a.h" selected="0" top="232" codecName="Default"/>
  </Files>
  <MSP430CrossStudioWindow activeProject="Lab5" fileDialogDefaultFilter="*.c" autoConnectTarget="MSP-FET430UIF(V3)" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 2" debugSearchPath="" autoConnectCapabilities="528255"/>
