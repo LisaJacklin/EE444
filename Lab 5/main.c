@@ -25,7 +25,8 @@ volatile char message[] = {"000. The temperature is 00 *C. Running time is 0:00 
 //all variables are defined here before being used elseware.
 volatile int messageInc = 0;                                      //this will increment the char through the msg above
 int counter = 0;
-int ButtonPressed, result,duration, timer;
+int duration = 0;
+int ButtonPressed;
 unsigned int ref30;// = *((unsigned int *)0x01A1A);
 unsigned int ref85;// = *((unsigned int *)0x01A1C);
 float slope;// = (85 - 30) / (ref85 - ref30);
@@ -43,8 +44,8 @@ void main(void) {
   IncrementVcore();
 
   //these two are the new line and carriage that must be added to the message.
-  message[52] = 10;
-  message[53] = 13;
+  message[51] = 10;
+  message[52] = 13;
 
    //the first thing to set up is the SMCLK to be 17 MHz in frequency
    UCSCTL1 = DCORSEL_6;                           //THIS SETS THE FREQUENCY RANGE
@@ -52,7 +53,7 @@ void main(void) {
    P7SEL |= (BIT0 + BIT1);                        //MAKES SURE THAT THE EXTERNAL XTI IS IN USE
    UCSCTL3 = 0;                                   //USING XTI exterinal crystal AS THE REFERENCED CLOCK
 
-   UCSCTL4 = SELS_3 + SELM_3;                     //SELM 0 SETS THE XTI SOURCE  
+   UCSCTL4 = SELS_3 + SELM_3 +SELA__XT1CLK;                     //SELM 0 SETS THE XTI SOURCE  
  
     do {
       UCSCTL7 &= ~(XT1LFOFFG + DCOFFG);           //clear the XT1 and DCO flags
@@ -92,7 +93,7 @@ void main(void) {
 //SETTING UP THE ADC12 NOW TO WORK WITH SMCLK
     REFCTL0 = REFGENACT + REFMSTR + REFVSEL_0 + REFON;//reference voltage setup 1.5V and output mode
 
-    ADC12CTL0 = ADC12SHT0_15 + ADC12MSC + ADC12ON;          //TURNS ON THE ADC12, AND USES 64 ADC12CLK CYCLES
+    ADC12CTL0 = ADC12SHT0_15 + ADC12MSC + ADC12ON;          //TURNS ON THE ADC12, AND USES 1024 ADC12CLK CYCLES
     ADC12CTL1 = ADC12SHS_0 + ADC12SHP + ADC12SSEL_3 + ADC12CONSEQ_1; //THIS SHOULD SET SMCLK AS THE BASE, SINGLE/SINGLE, AND SAMPLING TIMER
 
     ADC12MCTL0 = ADC12INCH_10 + ADC12SREF_1;     //this will set the temerature diode AND REFERENCE VOLTAGE;
@@ -107,42 +108,38 @@ void main(void) {
     ADC12CTL0 |= ADC12ENC;
 
 //NOW SETTING UP THE TIMER TO SEE HOW LONG IT TAKES TO RUN
-   TA1CTL = TASSEL__SMCLK + MC__UP;     //SET UP TO WORK WITH THE SMCLK AS REFERENCE
+   TA1CTL = TASSEL__ACLK + MC__CONTINOUS;     //SET UP TO WORK WITH THE SMCLK AS REFERENCE
    TA1CCTL0 |= CCIE;                            //INTERRUPTS ARE ENABLED
-   TA1CCR0 = 3276;                              //THIS IS THE TOP VALUE OF THE TIMER should this be adjusted?
-  
+   TA1CCR0 = 32768;                              //THIS IS THE TOP VALUE OF THE TIMER set to 1second sets
+
   _EINT();
   LPM0;
 }
 
 //I can confirm that the IRS for the button can be accessed
 void InterruptService_BUTTON(void) __interrupt [PORT2_VECTOR] {
+    counter++;                                    //loop itiration is now counting up          
+
     if (P2IV == P2IV_P2IFG7) {
       if (ButtonPressed == 0) { //this extra if statement is really not needed, but keeping for now
-          timer ^= BIT0;
-          counter++;
+         // timer ^= BIT0;
           //displays counter values to user
           message[0] = (counter / 100) + '0';
           message[1] = (counter % 100)/10 + '0';
-          message[2] = (counter%10)+'0';
+          message[2] = (counter % 10)+'0';
 
-          // timer values
-          message[] = time / 60 + '0';
-          message[] = (time % 60) / 10 + '0';
-          message[] = time % 10 + '0';
           //begin sending the message to the user
           UCA1TXBUF = message[messageInc];
-
-
 
        ButtonPressed = 1;                          //verify and set the loop again.
        ADC12CTL0 |= ADC12SC;                       //sampling and conversion begins
 
+       //debug_printf("\nduration = %i", duration);
+
        
       } 
    }
-duration = TA0R;  //will display the total time in duration variable.
-
+//duration = TA0R;  //will display the total time in duration variable.
 }
 
 void USC1_ISR(void) __interrupt[USCI_A1_VECTOR] {                                          
@@ -152,15 +149,14 @@ void USC1_ISR(void) __interrupt[USCI_A1_VECTOR] {
   case 2: break;                                    //this should be fo the usci vector a1 
   case 4://this is for transmitting interrupt
 
-    counter++;                                    //loop itiration is now counting up          
-    if (messageInc > 53) {
+    if (messageInc >= 52) {
       messageInc = 0;
       ButtonPressed = 0;
       break;
       }
     else {
-      UCA1TXBUF = message[messageInc];              //print the next value of the message
       messageInc++; //increments the character in message
+      UCA1TXBUF = message[messageInc];              //print the next value of the message
     }  
     break;
   default: break;                                   //if nothing happens then you can get out of the ISR
@@ -169,7 +165,7 @@ void USC1_ISR(void) __interrupt[USCI_A1_VECTOR] {
 
 //TIMER A INTERRUPT SERVICE ROUTINE
 void TimerA_ISR(void) __interrupt[TIMER1_A0_VECTOR]{
-  result++;                                        //update the timer results for next button press
+  duration++;                                        //increments counter by 1 second each type the ISR is reached
   }
 
 //ACD12 INTERRUPT SERVICE ROUTINE
@@ -182,9 +178,19 @@ void TimerA_ISR(void) __interrupt[TIMER1_A0_VECTOR]{
       temperature = (adcAverage - ref30) * slope + 30;
 
 
-      // temperature values
+      // temperature values 
       message[24] = temperature / 10 + '0'; //TENS PLACE
       message[25] = (temperature % 10) + '0'; //singles place
+
+      // timer values
+          message[47] = (duration / 60) + '0';
+          message[49] = (duration % 60) / 10 + '0';
+          message[50] = (duration % 10) + '0';
+
+          //debug_printf("\nduration = %i", duration);
+          //debug_printf(" message[47] = %i", message[47]);
+          //debug_printf(" message[49] = %i", message[49]);
+          //debug_printf(" message[50] = %i", message[50]);
 
       //lastly, the USCI_A1 interrupts should be allowed to take again/no longer blocked.
       UCA1IE |= UCTXIE;

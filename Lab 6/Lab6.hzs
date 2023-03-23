@@ -1,7 +1,9 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks/>
- <Breakpoints groups="Breakpoints" active_group="Breakpoints"/>
+ <Breakpoints groups="Breakpoints" active_group="Breakpoints">
+  <BreakpointListItem trigger="" line="43" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="main.c" useHWbreakpoint="false"/>
+ </Breakpoints>
  <EEMRegistersWindow>
   <EEMRegisters generalClockControl="2e" moduleClockControl="40f"/>
  </EEMRegistersWindow>
@@ -41,9 +43,9 @@
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="Lab5" radix="16" sizeText="" addressText=""/>
  </Memory4>
  <Project>
-  <ProjectSessionItem path="Lab5"/>
-  <ProjectSessionItem path="Lab5;Lab5"/>
-  <ProjectSessionItem path="Lab5;Lab5;Source Files"/>
+  <ProjectSessionItem path="Lab6"/>
+  <ProjectSessionItem path="Lab6;Lab6"/>
+  <ProjectSessionItem path="Lab6;Lab6;Source Files"/>
  </Project>
  <Register1>
   <RegisterWindow visibleNodes="UCS/UCSCTL0;UCS/UCSCTL1;UCS/UCSCTL2;UCS/UCSCTL3;UCS/UCSCTL4;UCS/UCSCTL5;UCS/UCSCTL6;UCS/UCSCTL7;UCS/UCSCTL8;ADC12_A/ADC12CTL0;ADC12_A/ADC12CTL1;ADC12_A/ADC12CTL2;ADC12_A/ADC12IFG;ADC12_A/ADC12IE;ADC12_A/ADC12IV;ADC12_A/ADC12MCTL0;ADC12_A/ADC12MCTL1;ADC12_A/ADC12MCTL2;ADC12_A/ADC12MCTL3;ADC12_A/ADC12MCTL4;ADC12_A/ADC12MCTL5;ADC12_A/ADC12MCTL6;ADC12_A/ADC12MCTL7;ADC12_A/ADC12MCTL8;ADC12_A/ADC12MCTL9;ADC12_A/ADC12MCTL10;ADC12_A/ADC12MCTL11;ADC12_A/ADC12MCTL12;ADC12_A/ADC12MCTL13;ADC12_A/ADC12MCTL14;ADC12_A/ADC12MCTL15;ADC12_A/ADC12MEM0;ADC12_A/ADC12MEM1;ADC12_A/ADC12MEM2;ADC12_A/ADC12MEM3;ADC12_A/ADC12MEM4;ADC12_A/ADC12MEM5;ADC12_A/ADC12MEM6;ADC12_A/ADC12MEM7;ADC12_A/ADC12MEM8;ADC12_A/ADC12MEM9;ADC12_A/ADC12MEM10;ADC12_A/ADC12MEM11;ADC12_A/ADC12MEM12;ADC12_A/ADC12MEM13;ADC12_A/ADC12MEM14;ADC12_A/ADC12MEM15" binaryNodes="" asciiNodes="" openNodes="ADC12_A" name="Lab3" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -89,8 +91,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="26" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="1" top="156" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="244" useTextEdit="1" openedFrom="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 5/main.c" useBinaryEdit="0" left="0" path="../../../../AppData/Local/Rowley Associates Limited/CrossWorks for MSP430/v3/packages/include/msp430f5438a.h" selected="0" top="232" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="35" y="28" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="main.c" selected="1" top="0" codecName="Default"/>
  </Files>
- <MSP430CrossStudioWindow activeProject="Lab5" fileDialogDefaultFilter="*.c" autoConnectTarget="MSP-FET430UIF(V3)" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 2" debugSearchPath="" autoConnectCapabilities="528255"/>
+ <MSP430CrossStudioWindow activeProject="Lab6" fileDialogDefaultFilter="*.c" autoConnectTarget="MSP-FET430UIF(V3)" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/Users/lmjacklin/Documents/GitHub/EE444/Lab 2" debugSearchPath="" autoConnectCapabilities="528255"/>
 </session>

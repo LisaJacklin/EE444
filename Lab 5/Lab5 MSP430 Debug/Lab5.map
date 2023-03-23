@@ -1,45 +1,46 @@
 
 SYMBOLS BY NAME
 
-    5c60 ISR        _ACD12_ISR          
-    1c44 UDATA0     _ButtonPressed      
-    5eea CODE       _IncrementVcore     
+    5cbc ISR        _ACD12_ISR          
+    1c46 UDATA0     _ButtonPressed      
+    5f5e CODE       _IncrementVcore     
     5c00 ISR        _InterruptService_BUTTON
-    5c5e ISR        _TimerA_ISR         
-    5c18 ISR        _USC1_ISR           
+    5cb6 ISR        _TimerA_ISR         
+    5c74 ISR        _USC1_ISR           
     1c00            ___RAM_Address      
     4000            ___RAM_Size         
     1c00            ___begin_IDATA0     
        0            ___begin_THREAD     
-    1c3a            ___begin_UDATA0     
+    1c3c            ___begin_UDATA0     
      4d2            ___crt_mpy32h       
      4d0            ___crt_mpy32l       
      4e2            ___crt_op2h         
      4e0            ___crt_op2l         
      4e8            ___crt_res2         
      4ea            ___crt_res3         
-    1c3a            ___end_IDATA0       
+    1c3c            ___end_IDATA0       
        0            ___end_THREAD       
-    1c46            ___end_UDATA0       
-    6010 CODE       ___float32_add      
-    6102 CODE       ___float32_mul      
-    6204 CODE       ___float32_to_int16 
-    5f8c CODE       ___int16_div        
-    5fb2 CODE       ___int16_mod        
-    5fd8 CODE       ___uint16_div       
-    61da CODE       ___uint16_to_float32
+    1c48            ___end_UDATA0       
+    6084 CODE       ___float32_add      
+    6176 CODE       ___float32_mul      
+    6278 CODE       ___float32_to_int16 
+    6000 CODE       ___int16_div        
+    6026 CODE       ___int16_mod        
+    604c CODE       ___uint16_div       
+    624e CODE       ___uint16_to_float32
     1c38 IDATA0     _counter            
-    5db2 CODE       _main               
-    5ff0 CODE       _memcpy             
-    6000 CODE       _memset             
+    1c3a IDATA0     _duration           
+    5e1a CODE       _main               
+    6064 CODE       _memcpy             
+    6074 CODE       _memset             
     1c00 IDATA0     _message            
     1c36 IDATA0     _messageInc         
-    1c42 UDATA0     _ref30              
-    1c40 UDATA0     _ref85              
-    1c3c UDATA0     _slope              
-    1c3a UDATA0     _temperature        
-    5db2 CONST      thread_init_begin   
-    5db2 CONST      thread_init_end     
+    1c44 UDATA0     _ref30              
+    1c42 UDATA0     _ref85              
+    1c3e UDATA0     _slope              
+    1c3c UDATA0     _temperature        
+    5e1a CONST      thread_init_begin   
+    5e1a CONST      thread_init_end     
 
 
 SYMBOLS BY VALUE
@@ -52,34 +53,35 @@ SYMBOLS BY VALUE
      4e2            ___crt_op2h         
      4e8            ___crt_res2         
      4ea            ___crt_res3         
-    1c00 IDATA0     _message            
     1c00            ___begin_IDATA0     
     1c00            ___RAM_Address      
+    1c00 IDATA0     _message            
     1c36 IDATA0     _messageInc         
     1c38 IDATA0     _counter            
-    1c3a            ___begin_UDATA0     
-    1c3a            ___end_IDATA0       
-    1c3a UDATA0     _temperature        
-    1c3c UDATA0     _slope              
-    1c40 UDATA0     _ref85              
-    1c42 UDATA0     _ref30              
-    1c44 UDATA0     _ButtonPressed      
-    1c46            ___end_UDATA0       
+    1c3a IDATA0     _duration           
+    1c3c            ___end_IDATA0       
+    1c3c            ___begin_UDATA0     
+    1c3c UDATA0     _temperature        
+    1c3e UDATA0     _slope              
+    1c42 UDATA0     _ref85              
+    1c44 UDATA0     _ref30              
+    1c46 UDATA0     _ButtonPressed      
+    1c48            ___end_UDATA0       
     4000            ___RAM_Size         
     5c00 ISR        _InterruptService_BUTTON
-    5c18 ISR        _USC1_ISR           
-    5c5e ISR        _TimerA_ISR         
-    5c60 ISR        _ACD12_ISR          
-    5db2 CONST      thread_init_end     
-    5db2 CODE       _main               
-    5db2 CONST      thread_init_begin   
-    5eea CODE       _IncrementVcore     
-    5f8c CODE       ___int16_div        
-    5fb2 CODE       ___int16_mod        
-    5fd8 CODE       ___uint16_div       
-    5ff0 CODE       _memcpy             
-    6000 CODE       _memset             
-    6010 CODE       ___float32_add      
-    6102 CODE       ___float32_mul      
-    61da CODE       ___uint16_to_float32
-    6204 CODE       ___float32_to_int16 
+    5c74 ISR        _USC1_ISR           
+    5cb6 ISR        _TimerA_ISR         
+    5cbc ISR        _ACD12_ISR          
+    5e1a CONST      thread_init_end     
+    5e1a CODE       _main               
+    5e1a CONST      thread_init_begin   
+    5f5e CODE       _IncrementVcore     
+    6000 CODE       ___int16_div        
+    6026 CODE       ___int16_mod        
+    604c CODE       ___uint16_div       
+    6064 CODE       _memcpy             
+    6074 CODE       _memset             
+    6084 CODE       ___float32_add      
+    6176 CODE       ___float32_mul      
+    624e CODE       ___uint16_to_float32
+    6278 CODE       ___float32_to_int16 
