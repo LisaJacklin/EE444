@@ -42,7 +42,7 @@ void main(void)
   P11DIR = BIT1;  //OUTPUT AT MCLK
   P11SEL |= BIT1; //VERIFY I/O TO THIS PIN
 
-  ////////////////////////////////////////////////////
+  ///////Setting up the Button/////////////////////////
 
 
 }

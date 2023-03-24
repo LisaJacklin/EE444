@@ -30,7 +30,7 @@ int ButtonPressed;
 unsigned int ref30;// = *((unsigned int *)0x01A1A);
 unsigned int ref85;// = *((unsigned int *)0x01A1C);
 float slope;// = (85 - 30) / (ref85 - ref30);
-volatile int temperature;
+ volatile int temperature;
 
 void main(void) {
 
@@ -174,8 +174,12 @@ void TimerA_ISR(void) __interrupt[TIMER1_A0_VECTOR]{
     unsigned int adcAverage;
     //give the result to the memory location....
   if (ADC12IV == ADC12IV_ADC12IFG7) { // CHECKS TO SEE IF THE FLAG HAS BEEN SET BEFORE TESTING AND AVERAGING
-      adcAverage = (ADC12MEM0 / 8) + (ADC12MEM1 / 8) + (ADC12MEM2 / 8) + (ADC12MEM3 / 8) + (ADC12MEM4 / 8) + (ADC12MEM5 / 8) + (ADC12MEM6 / 8) + (ADC12MEM7 / 8);
-      temperature = (adcAverage - ref30) * slope + 30;
+      adcAverage = (ADC12MEM0 );
+    //  adcAverage = adcAverage/8.0;
+      adcAverage = adcAverage - ref30;
+      adcAverage = adcAverage/slope;
+
+      temperature = adcAverage + 30;
 
 
       // temperature values 
@@ -187,8 +191,8 @@ void TimerA_ISR(void) __interrupt[TIMER1_A0_VECTOR]{
           message[49] = (duration % 60) / 10 + '0';
           message[50] = (duration % 10) + '0';
 
-          //debug_printf("\nduration = %i", duration);
-          //debug_printf(" message[47] = %i", message[47]);
+          //debug_printf("\nadc12mem0 = %i", ADC12MEM0);
+          //debug_printf(" \nadcAverage = %i", adcAverage);
           //debug_printf(" message[49] = %i", message[49]);
           //debug_printf(" message[50] = %i", message[50]);
 
