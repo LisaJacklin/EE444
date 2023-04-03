@@ -1,3 +1,25 @@
+/*
+Lisa Jacklin
+EE 444 Lab 6
+
+Lab 6 Objectives:
+x1. MCLK as close to 1MHz as possible
+2. button press to enter each LPM
+3. Blink an LED several times at the beginning of the program
+4. From here, do all you can to lower power consumption
+------------------------------------------------------------------
+
+Tests:
+-first stop the project and follow the rest CAREFULLY
+1. remove the JP1 umper and connect a multimeter to measure current draw of the MSP430
+2. project items -> properties ->target -> release JTAG ->set to 'yes'
+3. clock target -> reset MSP-FET430...
+4. comment on results in your report
+5. PUT THE JP1 JUMPER BACK
+
+*/
+
+
 #include <msp430.h>
 #include <in430.h>
 
@@ -6,17 +28,21 @@ volatile int Blink = 0;
 
 void main(void)
 {
-  WDTCTL = WDTPW | WDTHOLD; // disable watchdog timer
 
   // Setting up MCLK to 1 MHz
   P7SEL |= BIT0 + BIT1;
-  while (UCSCTL7 & XT1LFOFFG) {
+
+  while (UCSCTL7 & XT1LFOFFG) { //stabalizing the crystal before continuing
     UCSCTL7 &= ~XT1LFOFFG;
   }
+
+  //Now to specify the registers range, clocks, frequencies, etc.
   UCSCTL1 = DCORSEL_1;
   UCSCTL2 = 30;
   UCSCTL3 = SELREF__XT1CLK;
   UCSCTL4 = SELA__XT1CLK | SELS__DCOCLK | SELM__DCOCLK;
+
+  //now that the clock should be set, we need to output them and check the result
   P11DIR = BIT1;
   P11SEL |= BIT1;
 
